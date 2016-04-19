@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(Praktikum2)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+include_directories(src)
 
-set(SOURCE_FILES main.cpp Priorityqueue.cpp Priorityqueue.h)
-add_executable(Praktikum2 ${SOURCE_FILES})
+add_subdirectory(src)
+add_subdirectory(test)

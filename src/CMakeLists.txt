@@ -1,0 +1,7 @@
+set(core_SRCS Priorityqueue.cpp)
+
+add_definitions(-std=c++11)
+
+add_library(core ${core_SRCS})
+add_executable(exe main.cpp)
+target_link_libraries(exe core)

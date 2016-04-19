@@ -6,8 +6,19 @@
 #define PRAKTIKUM2_PRIORITYQUEUE_H
 
 #include <string>
-#include <vector>
-#include <gtest>
+#include <exception>
+
+class QueueException {
+public:
+    QueueException(std::string message, int code);
+    std::string msg();
+    int code();
+
+protected:
+    std::string _msg;
+    int _errorCode;
+
+};
 
 
 class Priorityqueue {
@@ -24,13 +35,18 @@ public:
 
     Priorityqueue();
 
+    ~Priorityqueue();
+
+
 
 private:
     struct pqentry_t {
         std::string value;
         float prio;
     };
-    std::vector<pqentry_t> structs;
+    unsigned long insPos;
+    unsigned long size;
+    pqentry_t **content;
     void bubbleDown(unsigned long index);
     void swap(unsigned long index1, unsigned long index2);
     void bubbleUp(unsigned long index);
@@ -38,7 +54,7 @@ private:
     unsigned  long getLeftChild(unsigned long index);
     unsigned long getRightChild(unsigned long index);
     unsigned long findByValue(std::string value, unsigned long start);
-
+    std::string removeIndx(unsigned long index);
 };
 
 
