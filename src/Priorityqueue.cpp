@@ -11,23 +11,24 @@
 Priorityqueue::Priorityqueue() {
     size = STARTSIZE;
     insPos = 0;
-    content = (pqentry_t **) malloc(sizeof(pqentry_t *) * size);
+    content = new pqentry_t*[size];
+    for (int i = 0; i < size; i++) {
+        content[i] = new pqentry_t;
+    }
 }
 
 void Priorityqueue::insert(std::string value, float p) {
-    pqentry_t *data = (pqentry_t*) malloc(sizeof(pqentry_t));
-    *data = {value, p};
-    content[insPos] = data;
-    bubbleUp(insPos - 1);
+    if (insPos == size) {
+        grow();
+    }
+    content[insPos]->value = value;
+    content[insPos]->prio = p;
+    bubbleUp(insPos);
+    insPos -= 1;
 }
 
 std::string Priorityqueue::extractMin() {
-    std::string tmpstr = content[0]->value;
-
-    swap(0, insPos - 1);
-    bubbleDown(0);
-    (insPos - 1);
-    return tmpstr;
+    return removeIndx(0);
 }
 
 void Priorityqueue::bubbleUp(unsigned long index) {
@@ -107,7 +108,7 @@ unsigned long Priorityqueue::findByValue(std::string value, unsigned long start)
 std::string Priorityqueue::removeIndx(unsigned long index) {
     unsigned long i = index;
     unsigned long last_idx = insPos - 1;
-    if (0 <= i && i <= last_idx) {
+    if (0 <= i && i <= last_idx && insPos != 0) {
         unsigned long length = content[i]->value.length();
         std::string val = content[i]->value;
         if (last_idx > 0) {
@@ -125,7 +126,7 @@ std::string Priorityqueue::removeIndx(unsigned long index) {
         return val;
     }
     else {
-        return NULL;
+        throw QueueException("Index nicht vorhanden", 2);
     }
 }
 
@@ -137,6 +138,29 @@ void Priorityqueue::remove(std::string value) {
         }
 }
 
+Priorityqueue::~Priorityqueue() {
+
+    for(int i = 0; i < size; i++) {
+        delete content[i];
+    }
+
+    delete[](content);
+
+}
+
+void Priorityqueue::grow() {
+    unsigned long newSize = size * 2;
+    pqentry_t **new_content = new pqentry_t*[newSize];
+    for (unsigned long i = 0; i < size; i++) {
+        new_content[i] = content[i];
+    }
+    for (unsigned long i = size; i < newSize; i++) {
+        new_content[i] = new pqentry_t;
+    }
+    delete[] content;
+    content = new_content;
+}
+
 
 QueueException::QueueException(std::string message, int code) : _msg(message), _errorCode(code) {
 
@@ -145,6 +169,12 @@ QueueException::QueueException(std::string message, int code) : _msg(message), _
 std::string QueueException::msg() {
     return _msg;
 }
+
+int QueueException::code() {
+    return _errorCode;
+}
+
+
 
 
 

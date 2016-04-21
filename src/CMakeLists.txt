@@ -1,4 +1,4 @@
-set(core_SRCS Priorityqueue.cpp)
+set(core_SRCS Priorityqueue.cpp Priorityqueue.h)
 
 add_definitions(-std=c++11)
 

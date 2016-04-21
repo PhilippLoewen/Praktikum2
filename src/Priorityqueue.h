@@ -55,6 +55,8 @@ private:
     unsigned long getRightChild(unsigned long index);
     unsigned long findByValue(std::string value, unsigned long start);
     std::string removeIndx(unsigned long index);
+
+    void grow();
 };
 
 
