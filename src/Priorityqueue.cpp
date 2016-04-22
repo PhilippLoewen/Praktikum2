@@ -36,7 +36,7 @@ T Priorityqueue<T>::extractMin() {
 template<typename T>
 void Priorityqueue<T>::bubbleUp(unsigned long index) {
     unsigned long i = index;
-    while (content[i]->prio < content[getParent(i)]->prio) {
+    while (i > 0 && content[i]->prio < content[getParent(i)]->prio) {
         swap(i, getParent(i));
         i = getParent(i);
     }
@@ -44,14 +44,14 @@ void Priorityqueue<T>::bubbleUp(unsigned long index) {
 
 template<typename T>
 unsigned long Priorityqueue<T>::getParent(unsigned long index) {
-    return index / 2;
+    return (index - 1) / 2;
 }
 
 template<typename T>
 void Priorityqueue<T>::swap(unsigned long index1, unsigned long index2) {
-    pqentry_t *tmp = content[index1];
-    content[index1] = content[index2];
-    content[index2] = tmp;
+    pqentry_t tmp = *content[index1];
+    *content[index1] = *content[index2];
+    *content[index2] = tmp;
 }
 
 template<typename T>
@@ -87,13 +87,19 @@ unsigned long Priorityqueue<T>::getRightChild(unsigned long index) {
 template<typename T>
 void Priorityqueue<T>::decreaseKey(T value, float p) {
     unsigned long i = findByValue(value, 0);
+    float old_value;
     if (i == insPos) {
         throw QueueException("This doesn't exist in here", 1337);
     }
     while (i != insPos) {
+        old_value = content[i]->prio;
         content[i]->prio = p;
-
-        bubbleUp(i);
+        if (old_value > p) {
+            bubbleUp(i);
+        }
+        else if (p > old_value){
+            bubbleDown(i) ;
+        };
         i = findByValue(value, i + 1);
     }
 
@@ -109,7 +115,7 @@ unsigned long Priorityqueue<T>::findByValue(T value, unsigned long start) {
     if (i == insPos) {
         return insPos;
     }
-    return 0;
+    return i;
 }
 
 template<typename T>
@@ -120,8 +126,11 @@ T Priorityqueue<T>::removeIndx(unsigned long index) {
         T val = content[i]->value;
         if (last_idx > 0) {
             swap(i, last_idx);
-            insPos -= 1;
+            if (size / 2 > insPos) {
+                shrink();
+            }
         }
+        insPos -= 1;
         if (i != last_idx) {
             if (i == 0 || content[i]->prio > content[getParent(i)]->prio) {
                 bubbleDown(i);
@@ -139,10 +148,10 @@ T Priorityqueue<T>::removeIndx(unsigned long index) {
 
 template<typename T>
 void Priorityqueue<T>::remove(T value) {
-    unsigned long index = 0;
+    unsigned long index = findByValue(value,0);
     while (index != insPos) {
-        index = findByValue(value, index);
         removeIndx(index);
+        index = findByValue(value, index + 1);
     }
 }
 
