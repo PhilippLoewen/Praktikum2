@@ -4,8 +4,11 @@
 
 #include "gtest/gtest.h"
 #include "../src/Priorityqueue.h"
+#include "../src/Priorityqueue.cpp"
+#include <string.h>
+#include <iterator>
 
-#define MAX 100000
+#define MAX 100
 
 std::string randomString(int size) {
     int i;
@@ -23,13 +26,19 @@ TEST(basic_tests, first) {
     unsigned long i;
     for (i = 0; i < MAX; i++) {
         strings[i] = randomString(8);
+        prios[i] = rand() % 100;
     }
 
-    Priorityqueue pq;
+    Priorityqueue<std::string> pq;
     EXPECT_ANY_THROW(pq.extractMin());
 
     for(i = 0; i < MAX; i++) {
-        pq.insert(strings[i], rand() % 100);
+        pq.insert(strings[i], prios[i]);
     }
+
+    std::sort(std::begin(prios), std::end(prios));
+
+
+    printf("nop");
 
 }

@@ -20,18 +20,18 @@ protected:
 
 };
 
-
+template <typename T>
 class Priorityqueue {
 public:
-    void insert(std::string value, float p);
+    void insert(T value, float p);
 
-    std::string extractMin();
+    T extractMin();
 
-    void decreaseKey(std::string value, float p);
+    void decreaseKey(T value, float p);
 
-    void remove(std::string value);
+    void remove(T value);
 
-    void print();
+    bool isEmpty();
 
     Priorityqueue();
 
@@ -41,7 +41,7 @@ public:
 
 private:
     struct pqentry_t {
-        std::string value;
+        T value;
         float prio;
     };
     unsigned long insPos;
@@ -51,13 +51,15 @@ private:
     void swap(unsigned long index1, unsigned long index2);
     void bubbleUp(unsigned long index);
     unsigned long getParent(unsigned long index);
-    unsigned  long getLeftChild(unsigned long index);
+    unsigned long getLeftChild(unsigned long index);
     unsigned long getRightChild(unsigned long index);
-    unsigned long findByValue(std::string value, unsigned long start);
-    std::string removeIndx(unsigned long index);
+    unsigned long findByValue(T value, unsigned long start);
+    T removeIndx(unsigned long index);
 
     void grow();
+    void shrink();
 };
+
 
 
 #endif //PRAKTIKUM2_PRIORITYQUEUE_H
